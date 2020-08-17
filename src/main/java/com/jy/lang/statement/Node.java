@@ -1,11 +1,13 @@
-package com.jy.lang.node;
+package com.jy.lang.statement;
 
 import com.jy.lang.BuiltInType;
 
 /**
+ * Node
+ *
  * @author zhy
  */
-public class BaseStatement extends Statement {
+public abstract class Node extends AbstractStatement {
     private BuiltInType type;
     private String description;
 
@@ -13,17 +15,15 @@ public class BaseStatement extends Statement {
         return type;
     }
 
-    public BaseStatement setType(BuiltInType type) {
+    public void setType(BuiltInType type) {
         this.type = type;
-        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public BaseStatement setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
 }
