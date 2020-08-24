@@ -3,15 +3,19 @@ package com.jy.lang;
 import com.jy.SyntaxException;
 
 /**
+ * statement = keyword [argument] (";" /"{" *statement "}" )
+ *
  * @author zhy
  */
 public interface Statement {
+
     /**
      * Append one child at the tail of this
      *
      * @param statement tail child
-     * @return <code>this</code> instance of implementor class
-     * @throws SyntaxException thrown while syntax error happens
+     * @param <T>       statement type
+     * @throws SyntaxException      while syntax error happens
+     * @throws NullPointerException while param statement is null
      */
-    Statement appendChild(Statement statement) throws SyntaxException;
+    <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException;
 }

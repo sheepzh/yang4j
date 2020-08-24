@@ -3,13 +3,13 @@ package com.jy;
 /**
  *
  */
-public class SyntaxException extends Exception {
+public class SyntaxException extends RuntimeException {
     public SyntaxException() {
-        this("LEX ERROR");
+        this("SYNTAX ERROR");
     }
 
-    public SyntaxException(String message) {
-        super(message);
+    public SyntaxException(String message, Object... args) {
+        super(String.format(message, args));
     }
 
     public SyntaxException(String message, Throwable cause) {

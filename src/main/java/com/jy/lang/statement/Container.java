@@ -1,5 +1,6 @@
 package com.jy.lang.statement;
 
+import com.jy.SyntaxException;
 import com.jy.lang.Statement;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class Container implements Statement {
         return this;
     }
 
-    public Container appendChild(Statement statement) {
-        children.add(statement);
-        return this;
+    @Override
+    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
+
     }
 }

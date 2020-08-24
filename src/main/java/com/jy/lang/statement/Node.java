@@ -1,5 +1,6 @@
 package com.jy.lang.statement;
 
+import com.jy.lang.AbstractStatement;
 import com.jy.lang.BuiltInType;
 
 /**
