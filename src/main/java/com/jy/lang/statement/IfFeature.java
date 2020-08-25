@@ -1,12 +1,12 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
 
+/**
+ * Section 7.18.2
+ * <p>
+ * The "if-feature" statement makes its parent statement conditional.
+ * The argument is the name of a feature, as defined by a "feature" statement.
+ */
 public class IfFeature extends AbstractStatement {
-    @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-
-    }
 }

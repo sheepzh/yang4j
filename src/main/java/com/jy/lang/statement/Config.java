@@ -1,12 +1,9 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
+import com.jy.lang.BaseBooleanArgumentStatement;
 
-public class Config extends AbstractStatement {
-    @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-
-    }
+/**
+ * Section 7.19.1
+ */
+public class Config extends BaseBooleanArgumentStatement {
 }

@@ -3,7 +3,7 @@ package com.jy.lang.statement;
 import com.jy.lang.BaseStringArgumentStatement;
 
 /**
- * Section 7.19.4
+ * Section 7.5.4.2
  */
-public class Reference extends BaseStringArgumentStatement {
+public class ErrorAppTag extends BaseStringArgumentStatement {
 }

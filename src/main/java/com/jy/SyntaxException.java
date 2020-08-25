@@ -12,7 +12,7 @@ public class SyntaxException extends RuntimeException {
         super(String.format(message, args));
     }
 
-    public SyntaxException(String message, Throwable cause) {
-        super(message, cause);
+    public SyntaxException(Throwable cause, String message, Object... args) {
+        super(String.format(message, args), cause);
     }
 }

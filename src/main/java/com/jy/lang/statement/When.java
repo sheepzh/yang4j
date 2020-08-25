@@ -1,12 +1,12 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
+import com.jy.lang.BaseStringArgumentStatement;
 
-public class When extends AbstractStatement {
-    @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-
-    }
+/**
+ * Section 7.19.5
+ * <p>
+ * Notes:
+ * Section 4.2.8
+ */
+public class When extends BaseStringArgumentStatement {
 }

@@ -1,12 +1,14 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
+import com.jy.lang.BuiltInType;
 
+/**
+ * Section 7.6.5
+ */
 public class Mandatory extends AbstractStatement {
     @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-
+    public Object value2Java() throws IllegalArgumentException {
+        return BuiltInType.BOOLEAN.fromArgument(argument);
     }
 }

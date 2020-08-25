@@ -4,8 +4,12 @@ import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
 import com.jy.lang.Statement;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * Section 7.10, RFC 6020
+ * Section 7.10
+ * <p>
  * The anyxml’s Substatements
  * +--------------+---------+-------------+
  * | substatement | section | cardinality |
@@ -22,13 +26,11 @@ import com.jy.lang.Statement;
  */
 public class Anyxml extends AbstractStatement {
 
-    public static String KEYWORD = "anyxml";
-
     private Config config;
     private Description description;
-    private IfFeature ifFeature;
+    private List<IfFeature> ifFeatureList;
     private Mandatory mandatory;
-    private Must must;
+    private List<Must> mustList;
     private Reference reference;
     private Status status;
     private When when;
@@ -40,11 +42,13 @@ public class Anyxml extends AbstractStatement {
         } else if (statement instanceof Description) {
             description = (Description) statement;
         } else if (statement instanceof IfFeature) {
-            ifFeature = (IfFeature) ((AbstractStatement) statement).setMax(Integer.MAX_VALUE);
+            if (ifFeatureList == null) ifFeatureList = new LinkedList<>();
+            ifFeatureList.add((IfFeature) statement);
         } else if (statement instanceof Mandatory) {
             mandatory = (Mandatory) statement;
         } else if (statement instanceof Must) {
-            must = (Must) ((AbstractStatement) statement).setMax(Integer.MAX_VALUE);
+            if (mustList == null) mustList = new LinkedList<>();
+            mustList.add((Must) statement);
         } else if (statement instanceof Reference) {
             reference = (Reference) statement;
         } else if (statement instanceof Status) {
@@ -52,7 +56,7 @@ public class Anyxml extends AbstractStatement {
         } else if (statement instanceof When) {
             when = (When) statement;
         } else {
-            notSupport(statement.getClass());
+            notSupport(statement);
         }
     }
 
@@ -74,12 +78,12 @@ public class Anyxml extends AbstractStatement {
         return this;
     }
 
-    public IfFeature getIfFeature() {
-        return ifFeature;
+    public List<IfFeature> getIfFeatureList() {
+        return ifFeatureList;
     }
 
-    public Anyxml setIfFeature(IfFeature ifFeature) {
-        this.ifFeature = ifFeature;
+    public Anyxml setIfFeatureList(List<IfFeature> ifFeatureList) {
+        this.ifFeatureList = ifFeatureList;
         return this;
     }
 
@@ -92,12 +96,12 @@ public class Anyxml extends AbstractStatement {
         return this;
     }
 
-    public Must getMust() {
-        return must;
+    public List<Must> getMustList() {
+        return mustList;
     }
 
-    public Anyxml setMust(Must must) {
-        this.must = must;
+    public Anyxml setMustList(List<Must> mustList) {
+        this.mustList = mustList;
         return this;
     }
 

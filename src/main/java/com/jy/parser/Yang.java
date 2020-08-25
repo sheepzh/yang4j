@@ -3,6 +3,7 @@ package com.jy.parser;
 import com.jy.SyntaxException;
 import com.jy.lang.Statement;
 import com.jy.lang.StatementFactory;
+import com.jy.lang.statement.Anyxml;
 import com.jy.util.CharUtils;
 
 import java.util.LinkedList;
@@ -184,8 +185,8 @@ public class Yang {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        String schema2 = "anyxml 23123 {rpc 3123 ; }";
+        String schema2 = "anyxml 23123 { config 3123 ; }";
         Yang yang = new Yang(schema2);
-        System.out.println(yang.getRoot());
+        System.out.println(((Anyxml) yang.getRoot()).getConfig().value2Java());
     }
 }

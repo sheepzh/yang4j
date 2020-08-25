@@ -1,10 +1,12 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
-import com.jy.lang.statement.Anyxml;
+import com.jy.lang.statement.*;
 import com.jy.lang.statement.Module;
-import com.jy.lang.statement.Rpc;
+import com.jy.util.NameUtil;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -30,9 +32,31 @@ public class StatementFactory {
 
     private StatementFactory() {
         constructorMap = new HashMap<>();
-        constructorMap.put(Anyxml.KEYWORD, Anyxml::new);
-        constructorMap.put(Module.KEYWORD, Module::new);
-        constructorMap.put(Rpc.KEYWORD, Rpc::new);
+        registry(Anyxml.class);
+        registry(Augment.class);
+        registry(Module.class);
+        registry(Rpc.class);
+        registry(Config.class);
+    }
+
+    /**
+     * Registry statements
+     *
+     * @param clz type of statement
+     */
+    private <T extends AbstractStatement> void registry(Class<T> clz) {
+        try {
+            Constructor<T> constructor = clz.getConstructor();
+            constructorMap.put(NameUtil.java2Yang(clz), () -> {
+                try {
+                    return constructor.newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException("Registry error", e);
+                }
+            });
+        } catch (NoSuchMethodException nme) {
+            throw new RuntimeException("Registry error", nme);
+        }
     }
 
     public Statement product(String keyword, String argument) {
