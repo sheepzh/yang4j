@@ -1,17 +1,6 @@
 package com.jy.lang.statement;
 
-/**
- * @author zhy
- */
-public class Revision {
-    private String description;
+import com.jy.lang.AbstractStatement;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public Revision setDescription(String description) {
-        this.description = description;
-        return this;
-    }
+public class Revision extends AbstractStatement {
 }

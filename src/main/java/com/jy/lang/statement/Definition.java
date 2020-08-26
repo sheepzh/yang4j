@@ -1,7 +1,6 @@
 package com.jy.lang.statement;
 
-/**
- * @author zhy
- */
-public class Definition {
+import com.jy.lang.AbstractStatement;
+
+public class Definition extends AbstractStatement {
 }

@@ -1,14 +1,6 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.Statement;
+import com.jy.lang.AbstractStatement;
 
-/**
- * @author zhy
- */
-public class Leaf extends Node {
-    @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-
-    }
+public class Leaf extends AbstractStatement {
 }

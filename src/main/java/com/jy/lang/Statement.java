@@ -12,12 +12,12 @@ public interface Statement {
     /**
      * Append one child at the tail of this
      *
-     * @param statement tail child
-     * @param <T>       statement type
+     * @param s   tail child
+     * @param <T> s type
      * @throws SyntaxException      while syntax error happens
-     * @throws NullPointerException while param statement is null
+     * @throws NullPointerException while param s is null
      */
-    <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException;
+    <T extends Statement> void append(T s) throws SyntaxException, NullPointerException;
 
     /**
      * Transfer the argument value 2 java variable

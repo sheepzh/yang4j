@@ -4,25 +4,10 @@ import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
 import com.jy.lang.Statement;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Section 7.10
- * <p>
- * The anyxml’s Substatements
- * +--------------+---------+-------------+
- * | substatement | section | cardinality |
- * +--------------+---------+-------------+
- * | config       | 7.19.1  | 0..1        |
- * | description  | 7.19.3  | 0..1        |
- * | if-feature   | 7.18.2  | 0..n        |
- * | mandatory    | 7.6.5   | 0..1        |
- * | must         | 7.5.3   | 0..n        |
- * | reference    | 7.19.4  | 0..1        |
- * | status       | 7.19.2  | 0..1        |
- * | when         | 7.19.5  | 0..1        |
- * +--------------+---------+-------------
  */
 public class Anyxml extends AbstractStatement {
 
@@ -36,27 +21,25 @@ public class Anyxml extends AbstractStatement {
     private When when;
 
     @Override
-    public <T extends Statement> void append(T statement) throws SyntaxException, NullPointerException {
-        if (statement instanceof Config) {
-            config = (Config) statement;
-        } else if (statement instanceof Description) {
-            description = (Description) statement;
-        } else if (statement instanceof IfFeature) {
-            if (ifFeatureList == null) ifFeatureList = new LinkedList<>();
-            ifFeatureList.add((IfFeature) statement);
-        } else if (statement instanceof Mandatory) {
-            mandatory = (Mandatory) statement;
-        } else if (statement instanceof Must) {
-            if (mustList == null) mustList = new LinkedList<>();
-            mustList.add((Must) statement);
-        } else if (statement instanceof Reference) {
-            reference = (Reference) statement;
-        } else if (statement instanceof Status) {
-            status = (Status) statement;
-        } else if (statement instanceof When) {
-            when = (When) statement;
+    public <T extends Statement> void append(T s) throws SyntaxException, NullPointerException {
+        if (s instanceof Config) {
+            config = notDuplicate(config, (Config) s);
+        } else if (s instanceof Description) {
+            description = notDuplicate(description, (Description) s);
+        } else if (s instanceof IfFeature) {
+            ifFeatureList = nullThenNew(ifFeatureList, (IfFeature) s);
+        } else if (s instanceof Mandatory) {
+            mandatory = notDuplicate(mandatory, (Mandatory) s);
+        } else if (s instanceof Must) {
+            mustList = nullThenNew(mustList, (Must) s);
+        } else if (s instanceof Reference) {
+            reference = notDuplicate(reference, (Reference) s);
+        } else if (s instanceof Status) {
+            status = notDuplicate(status, (Status) s);
+        } else if (s instanceof When) {
+            when = notDuplicate(when, (When) s);
         } else {
-            notSupport(statement);
+            notSupport(s);
         }
     }
 
