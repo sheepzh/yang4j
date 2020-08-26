@@ -169,6 +169,14 @@ public class Yang {
          * For stack function
          */
         private Triple previousNode;
+
+        @Override
+        public String toString() {
+            return "Triple{" +
+                    "keyword='" + keyword + '\'' +
+                    ", argument='" + argument + '\'' +
+                    '}';
+        }
     }
 
     public static void main(String[] s) {
@@ -185,7 +193,7 @@ public class Yang {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        String schema2 = "anyxml 23123 { config 3123 ; }";
+        String schema2 = "anyxml 23123 { config true 1; }";
         Yang yang = new Yang(schema2);
         System.out.println(((Anyxml) yang.getRoot()).getConfig().value2Java());
     }

@@ -1,15 +1,13 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
+import com.jy.lang.BaseAppendableStatement;
 
 import java.util.List;
 
 /**
  * Section 7.10
  */
-public class Anyxml extends AbstractStatement {
+public class Anyxml extends BaseAppendableStatement {
 
     private Config config;
     private Description description;
@@ -19,29 +17,6 @@ public class Anyxml extends AbstractStatement {
     private Reference reference;
     private Status status;
     private When when;
-
-    @Override
-    public <T extends Statement> void append(T s) throws SyntaxException, NullPointerException {
-        if (s instanceof Config) {
-            config = notDuplicate(config, (Config) s);
-        } else if (s instanceof Description) {
-            description = notDuplicate(description, (Description) s);
-        } else if (s instanceof IfFeature) {
-            ifFeatureList = nullThenNew(ifFeatureList, (IfFeature) s);
-        } else if (s instanceof Mandatory) {
-            mandatory = notDuplicate(mandatory, (Mandatory) s);
-        } else if (s instanceof Must) {
-            mustList = nullThenNew(mustList, (Must) s);
-        } else if (s instanceof Reference) {
-            reference = notDuplicate(reference, (Reference) s);
-        } else if (s instanceof Status) {
-            status = notDuplicate(status, (Status) s);
-        } else if (s instanceof When) {
-            when = notDuplicate(when, (When) s);
-        } else {
-            notSupport(s);
-        }
-    }
 
     public Config getConfig() {
         return config;

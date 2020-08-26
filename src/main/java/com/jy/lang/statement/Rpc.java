@@ -1,15 +1,13 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
+import com.jy.lang.BaseAppendableStatement;
 
 import java.util.List;
 
 /**
  * Section 7.13
  */
-public class Rpc extends AbstractStatement {
+public class Rpc extends BaseAppendableStatement {
     private Description description;
     private List<Grouping> groupingList;
     private List<IfFeature> ifFeatureList;
@@ -18,30 +16,6 @@ public class Rpc extends AbstractStatement {
     private Reference reference;
     private Status status;
     private List<Typedef> typedefList;
-
-    @Override
-    public <T extends Statement> void append(T s) throws SyntaxException, NullPointerException {
-        notNull(s);
-        if (s instanceof Description) {
-            description = notDuplicate(description, (Description) s);
-        } else if (s instanceof Grouping) {
-            groupingList = nullThenNew(groupingList, (Grouping) s);
-        } else if (s instanceof IfFeature) {
-            ifFeatureList = nullThenNew(ifFeatureList, (IfFeature) s);
-        } else if (s instanceof Input) {
-            input = notDuplicate(input, (Input) s);
-        } else if (s instanceof Output) {
-            output = notDuplicate(output, (Output) s);
-        } else if (s instanceof Reference) {
-            reference = notDuplicate(reference, (Reference) s);
-        } else if (s instanceof Status) {
-            status = notDuplicate(status, (Status) s);
-        } else if (s instanceof Typedef) {
-            typedefList = nullThenNew(typedefList, (Typedef) s);
-        } else {
-            notNull(s);
-        }
-    }
 
     public Description getDescription() {
         return description;

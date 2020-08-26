@@ -1,8 +1,6 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
-import com.jy.lang.Statement;
 
 import java.util.List;
 
@@ -21,36 +19,6 @@ public class Grouping extends AbstractStatement {
     private Status status;
     private List<Typedef> typedefList;
     private List<Uses> usesList;
-
-    @Override
-    public <T extends Statement> void append(T s) throws SyntaxException, NullPointerException {
-        notNull(s);
-        if (s instanceof Anyxml) {
-            anyxmlList = nullThenNew(anyxmlList, (Anyxml) s);
-        } else if (s instanceof Choice) {
-            choiceList = nullThenNew(choiceList, (Choice) s);
-        } else if (s instanceof Container) {
-            containerList = nullThenNew(containerList, (Container) s);
-        } else if (s instanceof Description) {
-            description = notDuplicate(description, (Description) s);
-        } else if (s instanceof Grouping) {
-            groupingList = nullThenNew(groupingList, (Grouping) s);
-        } else if (s instanceof Leaf) {
-            leaves = nullThenNew(leaves, (Leaf) s);
-        } else if (s instanceof LeafList) {
-            leafListList = nullThenNew(leafListList, (LeafList) s);
-        } else if (s instanceof Reference) {
-            reference = notDuplicate(reference, (Reference) s);
-        } else if (s instanceof Status) {
-            status = notDuplicate(status, (Status) s);
-        } else if (s instanceof Typedef) {
-            typedefList = nullThenNew(typedefList, (Typedef) s);
-        } else if (s instanceof Uses) {
-            usesList = nullThenNew(usesList, (Uses) s);
-        } else {
-            notSupport(s);
-        }
-    }
 
     public List<Anyxml> getAnyxmlList() {
         return anyxmlList;

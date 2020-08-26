@@ -1,39 +1,15 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
-import com.jy.lang.AbstractStatement;
-import com.jy.lang.BuiltInType;
-import com.jy.lang.Statement;
+import com.jy.lang.BaseAppendableStatement;
 
 /**
  * Section 7.5.3
  */
-public class Must extends AbstractStatement {
+public class Must extends BaseAppendableStatement {
     private Description description;
     private ErrorAppTag errorAppTag;
     private ErrorMessage errorMessage;
     private Reference reference;
-
-    @Override
-    public <T extends Statement> void append(T s) throws SyntaxException, NullPointerException {
-        notNull(s);
-        if (s instanceof Description) {
-            description = (Description) s;
-        } else if (s instanceof ErrorAppTag) {
-            errorAppTag = (ErrorAppTag) s;
-        } else if (s instanceof ErrorMessage) {
-            errorMessage = (ErrorMessage) s;
-        } else if (s instanceof Reference) {
-            reference = (Reference) s;
-        } else {
-            notSupport(s);
-        }
-    }
-
-    @Override
-    public String value2Java() throws IllegalArgumentException {
-        return BuiltInType.STRING.fromArgument(argument);
-    }
 
     public Description getDescription() {
         return description;

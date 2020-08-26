@@ -8,7 +8,7 @@ import static com.jy.lang.BuiltInType.BOOLEAN;
 /**
  * The statements which takes as an argument a string that is "true" or "false"
  */
-public class BaseBooleanArgumentStatement extends AbstractStatement {
+public abstract class BaseBooleanStatement extends AbstractStatement {
     @Override
     public Object value2Java() throws IllegalArgumentException {
         if (StringUtils.isBlank(argument)) {
