@@ -21,7 +21,7 @@ public interface BuiltInType<T> {
      * @return the java variable
      * @throws IllegalArgumentException while value is illegal
      */
-    T fromArgument(String value) throws SyntaxException;
+    T fromArgument(String value) throws SyntaxException, IllegalArgumentException;
 
     /**
      * Wrap the common exception
@@ -32,7 +32,7 @@ public interface BuiltInType<T> {
      * @return one illegal argument exception
      */
     static IllegalArgumentException formatException(String typeName, String value, Throwable cause) {
-        return new IllegalArgumentException(String.format("%s format error: %s", typeName, value), cause);
+        return new IllegalArgumentException(String.format("'%s' format error: %s", typeName, value), cause);
     }
 
     // Constants
@@ -68,7 +68,7 @@ public interface BuiltInType<T> {
         } else if ("false".equals(value)) {
             return Boolean.FALSE;
         } else {
-            throw formatException("BOOLEAN", value, null);
+            throw formatException("boolean", value, null);
         }
     };
 
@@ -95,7 +95,6 @@ public interface BuiltInType<T> {
 
     /**
      * A reference to an abstract identity
-     *
      */
     BuiltInType<String> IDENTITY_REF = value -> value;
 
@@ -105,7 +104,7 @@ public interface BuiltInType<T> {
      */
     BuiltInType<String> ENUMERATION = value -> value;
 
-    BuiltInType<Byte> INT_8 = value -> {
+    BuiltInType<Byte> INT8 = value -> {
         try {
             return Byte.valueOf(value);
         } catch (NumberFormatException ne) {
@@ -137,7 +136,7 @@ public interface BuiltInType<T> {
         }
     };
 
-    BuiltInType<Short> UINT_8 = value -> {
+    BuiltInType<Short> UINT8 = value -> {
         try {
             short result = Short.parseShort(value);
             if (result > ((short) Byte.MAX_VALUE << 1 | 1) || result < 0)
@@ -163,26 +162,4 @@ public interface BuiltInType<T> {
      * Human-readable string
      */
     BuiltInType<String> STRING = value -> value;
-//
-//    /**
-//     * Unsigned integer
-//     */
-//    UINT_8(Byte .class, true),
-//
-//    UINT_16(Short .class, true),
-//
-//    UINT_32(Integer .class, true),
-//
-//    UINT_64(Integer .class, true),
-//
-//    STRING(String .class, false);
-//
-//    private Class<? extends Serializable> clz;
-//    private boolean unsigned;
-//
-//    BuiltInType(Class<? extends Serializable> clz, Boolean unsigned) {
-//        this.clz = clz;
-//        this.unsigned = unsigned;
-//    }
-
 }

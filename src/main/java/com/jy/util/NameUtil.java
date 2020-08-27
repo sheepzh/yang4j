@@ -1,5 +1,7 @@
 package com.jy.util;
 
+import com.jy.lang.annotation.AliasFor;
+
 /**
  * @author zhy
  */
@@ -12,6 +14,12 @@ public class NameUtil {
      */
     public static String java2Yang(Class<?> javaClz) {
         StringBuilder sb = new StringBuilder();
+        // Check whether alias name has been marked
+        AliasFor aliasFor = javaClz.getAnnotation(AliasFor.class);
+        if (aliasFor != null) {
+            // If marked, return it directly
+            return aliasFor.value();
+        }
         char[] chars = javaClz.getSimpleName().toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];

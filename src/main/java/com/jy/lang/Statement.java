@@ -1,6 +1,8 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
+import com.jy.util.NameUtil;
+import com.jy.util.StringUtils;
 
 /**
  * statement = keyword [argument] (";" /"{" *statement "}" )
@@ -9,21 +11,25 @@ import com.jy.SyntaxException;
  */
 public interface Statement {
 
-    /**
-     * Append one child at the tail of this
-     *
-     * @param s   tail child
-     * @param <T> s type
-     * @throws SyntaxException      while syntax error happens
-     * @throws NullPointerException while param s is null
-     */
-    <T extends Statement> void append(T s) throws SyntaxException, NullPointerException;
+    String getKeyword();
+
+    void setKeyword(String keyword);
+
+    String getArgument();
+
+    void setArgument(String argument);
 
     /**
-     * Transfer the argument value 2 java variable
+     * Assert that this is one valid statement
      *
-     * @return the java variable
-     * @throws IllegalArgumentException while this statement does not support value
+     * @throws SyntaxException while not invalid
      */
-    Object value2Java() throws IllegalArgumentException;
+    default void assertValid() throws SyntaxException {
+        if (StringUtils.isBlank(getKeyword())) {
+            throw new SyntaxException("No keyword");
+        }
+        if (StringUtils.isBlank(getArgument())) {
+            throw new SyntaxException("No argument on the %s statement", NameUtil.java2Yang(this.getClass()));
+        }
+    }
 }

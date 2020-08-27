@@ -7,16 +7,59 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Appendable statement
  *
  * @author zhy
  */
-public abstract class BaseAppendableStatement extends AbstractStatement {
+public abstract class BaseAppendableStatement extends AbstractStatement implements ChildrenAppendable {
 
-    private Map<Class<?>, Field> subFieldType;
-    private Map<Class<?>, Field> listSubFieldType;
+    private static final Map<Class<? extends BaseAppendableStatement>, Map<Class<?>, Field>>
+            SUB_FIELD_MAP = new ConcurrentHashMap<>(32);
+    private static final Map<Class<? extends BaseAppendableStatement>, Map<Class<?>, Field>>
+            LIST_SUB_FIELD_MAP = new ConcurrentHashMap<>(32);
+
+    /**
+     * @param s required statement
+     */
+    protected final <T extends Statement> void required(T s, Class<T> clz) {
+        if (s == null) {
+            throw new SyntaxException("'%s' is required in '%s'",
+                    NameUtil.java2Yang(clz), NameUtil.java2Yang(this.getClass()));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void assertValid() throws SyntaxException {
+        initSubFieldType();
+        initSubListFieldType();
+        Class<? extends BaseAppendableStatement> thisClz = this.getClass();
+        SUB_FIELD_MAP.get(thisClz).forEach((c, f) -> {
+            try {
+                Statement child = (Statement) f.get(this);
+                if (child != null) {
+                    child.assertValid();
+                }
+            } catch (IllegalAccessException e) {
+                // Never happen
+                e.printStackTrace();
+            }
+        });
+        LIST_SUB_FIELD_MAP.get(thisClz).forEach((c, f) -> {
+            try {
+                List<Statement> childList = (List<Statement>) f.get(this);
+                if (childList != null) {
+                    childList.forEach(Statement::assertValid);
+                }
+            } catch (IllegalAccessException e) {
+                // Never happen
+                e.printStackTrace();
+            }
+        });
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -34,8 +77,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement {
                 field.set(this, s);
             } catch (IllegalAccessException e) {
                 // Never happen
-                e.printStackTrace();
-                throw new SyntaxException("Unknown statement %s", NameUtil.java2Yang(s.getClass()));
+                dealIllegalAccessException(e);
             }
         } else {
             field = getListField(type);
@@ -50,27 +92,72 @@ public abstract class BaseAppendableStatement extends AbstractStatement {
                     previous.add(s);
                 } catch (IllegalAccessException e) {
                     // Never happen
-                    e.printStackTrace();
-                    throw new SyntaxException("Unknown statement %s", NameUtil.java2Yang(s.getClass()));
+                    dealIllegalAccessException(e);
                 }
             }
         }
     }
 
+    private void dealIllegalAccessException(IllegalAccessException iae) {
+        iae.printStackTrace();
+        throw new SyntaxException("Unknown statement");
+    }
+
     private <T extends Statement> Field getField(Class<T> type) {
-        if (subFieldType == null) {
-            subFieldType = new HashMap<>();
-            Class<? extends BaseAppendableStatement> clz = this.getClass();
-            Field[] fields = clz.getDeclaredFields();
-            for (Field field : fields) {
-                Class<?> fieldClz = field.getType();
-                if (isStatementClz(fieldClz)) {
-                    field.setAccessible(true);
-                    subFieldType.put(fieldClz, field);
+        initSubFieldType();
+        return SUB_FIELD_MAP.get(this.getClass()).get(type);
+    }
+
+    private void initSubFieldType() {
+        final Class<? extends BaseAppendableStatement> thisClz = this.getClass();
+        if (SUB_FIELD_MAP.get(thisClz) == null) {
+            synchronized (thisClz) {
+                if (SUB_FIELD_MAP.get(thisClz) == null) {
+                    Map<Class<?>, Field> fieldBuf = new HashMap<>();
+                    Field[] fields = thisClz.getDeclaredFields();
+                    for (Field field : fields) {
+                        Class<?> fieldClz = field.getType();
+                        if (isStatementClz(fieldClz)) {
+                            field.setAccessible(true);
+                            fieldBuf.put(fieldClz, field);
+                        }
+                    }
+                    SUB_FIELD_MAP.put(thisClz, fieldBuf);
                 }
             }
         }
-        return subFieldType.get(type);
+    }
+
+    private <T extends Statement> Field getListField(Class<T> type) {
+        initSubListFieldType();
+        return LIST_SUB_FIELD_MAP.get(this.getClass()).get(type);
+    }
+
+    private void initSubListFieldType() {
+        final Class<? extends BaseAppendableStatement> thisClz = this.getClass();
+        if (!LIST_SUB_FIELD_MAP.containsKey(thisClz)) {
+            synchronized (thisClz) {
+                if (!LIST_SUB_FIELD_MAP.containsKey(thisClz)) {
+                    Map<Class<?>, Field> fieldBuf = new HashMap<>();
+                    Field[] fields = thisClz.getDeclaredFields();
+                    for (Field field : fields) {
+                        Type fc = field.getGenericType();
+                        if (fc instanceof ParameterizedType) {
+                            ParameterizedType pt = (ParameterizedType) fc;
+                            Type[] types = pt.getActualTypeArguments();
+                            if (types != null && types.length > 0) {
+                                Class<?> typeClz = (Class<?>) types[0];
+                                if (isStatementClz(typeClz)) {
+                                    field.setAccessible(true);
+                                    fieldBuf.put(typeClz, field);
+                                }
+                            }
+                        }
+                    }
+                    LIST_SUB_FIELD_MAP.put(thisClz, fieldBuf);
+                }
+            }
+        }
     }
 
     private boolean isStatementClz(Class<?> clz) {
@@ -98,29 +185,6 @@ public abstract class BaseAppendableStatement extends AbstractStatement {
                 checked.add(one);
             }
         }
-    }
-
-    private <T extends Statement> Field getListField(Class<T> type) {
-        if (listSubFieldType == null) {
-            listSubFieldType = new HashMap<>();
-            Class<? extends BaseAppendableStatement> clz = this.getClass();
-            Field[] fields = clz.getFields();
-            for (Field field : fields) {
-                Type fc = field.getGenericType();
-                if (fc instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType) fc;
-                    Type[] types = pt.getActualTypeArguments();
-                    if (types != null && types.length > 0) {
-                        Class<?> typeClz = (Class<?>) types[0];
-                        if (isStatementClz(typeClz)) {
-                            field.setAccessible(true);
-                            listSubFieldType.put(clz, field);
-                        }
-                    }
-                }
-            }
-        }
-        return listSubFieldType.get(type);
     }
 
     private <T extends Statement> void notNull(T t) {

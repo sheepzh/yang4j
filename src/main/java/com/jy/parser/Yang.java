@@ -1,10 +1,14 @@
 package com.jy.parser;
 
 import com.jy.SyntaxException;
+import com.jy.lang.ChildrenAppendable;
 import com.jy.lang.Statement;
 import com.jy.lang.StatementFactory;
 import com.jy.lang.statement.Anyxml;
+import com.jy.lang.statement.Rpc;
+import com.jy.parser.note.DefaultNodeParser;
 import com.jy.util.CharUtils;
+import com.jy.util.NameUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,32 +20,49 @@ import java.util.List;
  */
 public class Yang {
 
-    private final StringBuffer tokens = new StringBuffer();
+    private NoteParser noteParser;
 
-    private Triple buf = null;
+    private String schema;
 
+    private final StringBuilder tokens = new StringBuilder();
+
+    private Triple buf;
     /**
      * Tail of the triple stack while initializing
      */
     private Triple tail = null;
-
-    private final Statement root;
 
     /**
      * Current line of schema, for error logging
      */
     private int currentLine = 1;
 
-    private boolean quoted = false;
+    public Yang() {
+        this(new DefaultNodeParser());
+    }
 
-    public Yang(String schema) throws SyntaxException {
+    public Yang(NoteParser noteParser) {
+        this.noteParser = noteParser;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> T build() {
+        init();
+        boolean quoted = false;
         for (char c : schema.toCharArray()) {
+            if (c == '\n') currentLine++;
+            // double quote
+            if (quoted) {
+                if (c == '"') quoted = false;
+                else tokens.append(c);
+                continue;
+            }
+            // note
+            if (noteParser.accept(c).isOpen()) {
+                continue;
+            }
             if (CharUtils.isNotBlank(c)) {
                 // Regard blank character between quotes as one token
-                if (quoted) {
-                    tokens.append(c);
-                    continue;
-                }
                 if (c == '{') {
                     resolveTokens();
                     if (emptyTriple()) {
@@ -54,27 +75,32 @@ public class Yang {
                         throw new SyntaxException("Need keyword [ argument ] before ';' in line %d!", currentLine);
                     }
                     // Substatements of leaf;
-                    Triple parent = pop();
-                    if (parent != null) {
-                        addChildTo(parent);
-                    }
-                    push();
+                    merge();
                 } else if (c == '}') {
                     if (!emptyTriple()) {
                         throw new SyntaxException("Need ';' before '}' in line %d!", currentLine);
                     }
+                    // Current statement is over, then pop it and add it into the parent's child list
+                    buf = pop();
+                    merge();
+                } else if (c == '"') {
+                    quoted = true;
                 } else {
                     tokens.append(c);
                 }
             } else {
-                if (c == '\n') {
-                    currentLine++;
-                }
                 resolveTokens();
             }
         }
-        root = generate(this.tail);
-        this.buf = null;
+        noteParser.assertClose();
+        return (T) generate(this.tail);
+    }
+
+    private void init() {
+        currentLine = 1;
+        noteParser.initialize();
+        buf = null;
+        tail = null;
     }
 
     /**
@@ -92,7 +118,7 @@ public class Yang {
                 buf.argument = word;
             } else {
                 // Both keyword and argument have been set
-                throw new SyntaxException("Unexpected word in line %d: %s", currentLine, word);
+                throw new SyntaxException("Unexpected word in line %d: %s!", currentLine, word);
             }
             // Clean the tokens
             tokens.delete(0, tokens.length());
@@ -119,14 +145,20 @@ public class Yang {
     }
 
     /**
-     * Append the buf to {@code parent}'s children, then replace buf with {@code parent}
-     *
-     * @param parent parent
+     * Append the buf to stack top's child list, then clear the buf
+     * If the stack is empty, just push the buf into it
      */
-    private void addChildTo(Triple parent) {
-        if (parent.children == null) parent.children = new LinkedList<>();
-        parent.children.add(buf);
-        buf = parent;
+    private void merge() {
+        Triple parent = pop();
+        if (parent != null) {
+            // Add the buf into the child list of parent
+            if (parent.children == null) parent.children = new LinkedList<>();
+            parent.children.add(buf);
+            // Set buf = parent
+            buf = parent;
+        }
+        // Push the buf to the stack;
+        push();
     }
 
     /**
@@ -146,15 +178,36 @@ public class Yang {
         if (triple != null) {
             result = factory.product(triple.keyword, triple.argument);
             List<Triple> children = triple.children;
-            if (children != null && !children.isEmpty()) {
-                children.stream().map(this::generate).forEach(result::append);
+            if (children != null && children.size() > 0) {
+                if (result instanceof ChildrenAppendable) {
+                    ChildrenAppendable appendable = (ChildrenAppendable) result;
+                    children.stream().map(this::generate).forEach(appendable::append);
+                } else {
+                    throw new SyntaxException("'%s' mustn't contain any substatements, but found in the schema",
+                            NameUtil.java2Yang(result.getClass())
+                    );
+                }
             }
         }
         return result;
     }
 
-    public Statement getRoot() {
-        return root;
+    public NoteParser getNoteParser() {
+        return noteParser;
+    }
+
+    public Yang setNoteParser(NoteParser noteParser) {
+        this.noteParser = noteParser;
+        return this;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public Yang setSchema(String schema) {
+        this.schema = schema;
+        return this;
     }
 
     /**
@@ -189,12 +242,15 @@ public class Yang {
                 "  }\n" +
                 "  output {\n" +
                 "    leaf status {\n" +
-                "      type string;\n" +
+                "      type boolean;\n" +
+                "      default true;" +
                 "    }\n" +
                 "  }\n" +
                 "}";
-        String schema2 = "anyxml 23123 { config true 1; }";
-        Yang yang = new Yang(schema2);
-        System.out.println(((Anyxml) yang.getRoot()).getConfig().value2Java());
+        String schema2 = "anyxml 23123 { config \"true\" ; }";
+
+        Yang yang = new Yang();
+        Rpc rpc = yang.setSchema(schema).build();
+        Anyxml anyxml = yang.setSchema(schema2).build();
     }
 }

@@ -1,5 +1,6 @@
 package com.jy.lang.statement;
 
+import com.jy.SyntaxException;
 import com.jy.lang.BaseAppendableStatement;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class Module extends BaseAppendableStatement {
     private List<Include> includeList;
     private List<Leaf> leaves;
     private List<LeafList> leafListList;
-    private List<com.jy.lang.statement.List> listList;
+    private List<ListS> listList;
     private List<Notification> notificationList;
     private Organization organization;
     private Reference reference;
@@ -41,6 +42,13 @@ public class Module extends BaseAppendableStatement {
     private List<Rpc> rpc;
     private List<Typedef> typedefList;
     private List<Uses> usesList;
+
+    @Override
+    public void assertValid() throws SyntaxException {
+        super.assertValid();
+        required(namespace, Namespace.class);
+        required(prefix, Prefix.class);
+    }
 
     public Namespace getNamespace() {
         return namespace;
@@ -195,11 +203,11 @@ public class Module extends BaseAppendableStatement {
         return this;
     }
 
-    public List<com.jy.lang.statement.List> getListList() {
+    public List<ListS> getListList() {
         return listList;
     }
 
-    public Module setListList(List<com.jy.lang.statement.List> listList) {
+    public Module setListList(List<ListS> listList) {
         this.listList = listList;
         return this;
     }

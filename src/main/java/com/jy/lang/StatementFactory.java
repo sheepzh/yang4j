@@ -7,8 +7,7 @@ import com.jy.util.NameUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
 public class StatementFactory {
     private static StatementFactory instance;
 
-    private final Map<String, Supplier<? extends AbstractStatement>> constructorMap;
+    private final Map<String, Supplier<? extends Statement>> constructorMap;
 
     public static StatementFactory getInstance() {
         if (instance == null) {
@@ -32,36 +31,51 @@ public class StatementFactory {
 
     private StatementFactory() {
         constructorMap = new HashMap<>();
-        registry(Anyxml.class);
-        registry(Augment.class);
-        registry(Module.class);
-        registry(Rpc.class);
-        registry(Config.class);
+        register(
+                Anyxml.class, Augment.class,
+                Case.class, Choice.class, Config.class, Contact.class, Container.class,
+                Default.class, Description.class,
+                Input.class,
+                Key.class,
+                Leaf.class, LeafList.class, ListS.class,
+                Module.class,
+                Namespace.class,
+                Organization.class, Output.class,
+                Prefix.class,
+                Revision.class, Rpc.class,
+                Type.class
+        );
     }
 
     /**
      * Registry statements
      *
-     * @param clz type of statement
+     * @param classes type of statement
      */
-    private <T extends AbstractStatement> void registry(Class<T> clz) {
-        try {
-            Constructor<T> constructor = clz.getConstructor();
-            constructorMap.put(NameUtil.java2Yang(clz), () -> {
-                try {
-                    return constructor.newInstance();
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException("Registry error", e);
-                }
-            });
-        } catch (NoSuchMethodException nme) {
-            throw new RuntimeException("Registry error", nme);
+    @SafeVarargs
+    private final void register(Class<? extends Statement>... classes) {
+        for (Class<? extends Statement> clz : classes) {
+            try {
+                Constructor<? extends Statement> constructor = clz.getConstructor();
+                constructorMap.put(NameUtil.java2Yang(clz), () -> {
+                    try {
+                        return constructor.newInstance();
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("Registry error", e);
+                    }
+                });
+            } catch (NoSuchMethodException nme) {
+                throw new RuntimeException("Registry error", nme);
+            }
         }
     }
 
     public Statement product(String keyword, String argument) {
-        Supplier<? extends AbstractStatement> constructor = constructorMap.get(keyword);
+        Supplier<? extends Statement> constructor = constructorMap.get(keyword);
         if (constructor == null) throw new SyntaxException("Unknown keyword: %s", keyword);
-        return constructor.get().setKeyword(keyword).setArgument(argument);
+        Statement result = constructor.get();
+        result.setKeyword(keyword);
+        result.setArgument(argument);
+        return result;
     }
 }

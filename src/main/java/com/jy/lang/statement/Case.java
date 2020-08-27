@@ -1,52 +1,38 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.BaseAppendableStatement;
+import com.jy.lang.AbstractStatement;
 
 import java.util.List;
 
-/**
- * Section 7.9
- */
-public class Choice extends BaseAppendableStatement {
+public class Case extends AbstractStatement {
     private List<Anyxml> anyxmlList;
-    private List<Case> caseLists;
-    private Config config;
+    private List<Choice> choiceList;
     private List<Container> containerList;
-    private Default aDefault;
     private Description description;
     private List<IfFeature> ifFeatureList;
     private List<Leaf> leafList;
     private List<LeafList> leafListList;
     private List<ListS> listList;
-    private Mandatory mandatory;
     private Reference reference;
     private Status status;
+    private List<Uses> usesList;
     private When when;
 
     public List<Anyxml> getAnyxmlList() {
         return anyxmlList;
     }
 
-    public Choice setAnyxmlList(List<Anyxml> anyxmlList) {
+    public Case setAnyxmlList(List<Anyxml> anyxmlList) {
         this.anyxmlList = anyxmlList;
         return this;
     }
 
-    public List<Case> getCaseLists() {
-        return caseLists;
+    public List<Choice> getChoiceList() {
+        return choiceList;
     }
 
-    public Choice setCaseLists(List<Case> caseLists) {
-        this.caseLists = caseLists;
-        return this;
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public Choice setConfig(Config config) {
-        this.config = config;
+    public Case setChoiceList(List<Choice> choiceList) {
+        this.choiceList = choiceList;
         return this;
     }
 
@@ -54,17 +40,8 @@ public class Choice extends BaseAppendableStatement {
         return containerList;
     }
 
-    public Choice setContainerList(List<Container> containerList) {
+    public Case setContainerList(List<Container> containerList) {
         this.containerList = containerList;
-        return this;
-    }
-
-    public Default getaDefault() {
-        return aDefault;
-    }
-
-    public Choice setaDefault(Default aDefault) {
-        this.aDefault = aDefault;
         return this;
     }
 
@@ -72,7 +49,7 @@ public class Choice extends BaseAppendableStatement {
         return description;
     }
 
-    public Choice setDescription(Description description) {
+    public Case setDescription(Description description) {
         this.description = description;
         return this;
     }
@@ -81,7 +58,7 @@ public class Choice extends BaseAppendableStatement {
         return ifFeatureList;
     }
 
-    public Choice setIfFeatureList(List<IfFeature> ifFeatureList) {
+    public Case setIfFeatureList(List<IfFeature> ifFeatureList) {
         this.ifFeatureList = ifFeatureList;
         return this;
     }
@@ -90,7 +67,7 @@ public class Choice extends BaseAppendableStatement {
         return leafList;
     }
 
-    public Choice setLeafList(List<Leaf> leafList) {
+    public Case setLeafList(List<Leaf> leafList) {
         this.leafList = leafList;
         return this;
     }
@@ -99,7 +76,7 @@ public class Choice extends BaseAppendableStatement {
         return leafListList;
     }
 
-    public Choice setLeafListList(List<LeafList> leafListList) {
+    public Case setLeafListList(List<LeafList> leafListList) {
         this.leafListList = leafListList;
         return this;
     }
@@ -108,17 +85,8 @@ public class Choice extends BaseAppendableStatement {
         return listList;
     }
 
-    public Choice setListList(List<ListS> listList) {
+    public Case setListList(List<ListS> listList) {
         this.listList = listList;
-        return this;
-    }
-
-    public Mandatory getMandatory() {
-        return mandatory;
-    }
-
-    public Choice setMandatory(Mandatory mandatory) {
-        this.mandatory = mandatory;
         return this;
     }
 
@@ -126,7 +94,7 @@ public class Choice extends BaseAppendableStatement {
         return reference;
     }
 
-    public Choice setReference(Reference reference) {
+    public Case setReference(Reference reference) {
         this.reference = reference;
         return this;
     }
@@ -135,8 +103,17 @@ public class Choice extends BaseAppendableStatement {
         return status;
     }
 
-    public Choice setStatus(Status status) {
+    public Case setStatus(Status status) {
         this.status = status;
+        return this;
+    }
+
+    public List<Uses> getUsesList() {
+        return usesList;
+    }
+
+    public Case setUsesList(List<Uses> usesList) {
+        this.usesList = usesList;
         return this;
     }
 
@@ -144,7 +121,7 @@ public class Choice extends BaseAppendableStatement {
         return when;
     }
 
-    public Choice setWhen(When when) {
+    public Case setWhen(When when) {
         this.when = when;
         return this;
     }
