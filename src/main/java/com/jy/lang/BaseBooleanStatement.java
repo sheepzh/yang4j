@@ -9,7 +9,7 @@ import static com.jy.lang.BuiltInType.BOOLEAN;
 /**
  * The statements which takes as an argument a string that is "true" or "false"
  */
-public abstract class BaseBooleanStatement extends AbstractStatement implements Valuable {
+public abstract class BaseBooleanStatement extends AbstractStatement implements Valuable<Boolean> {
 
     @Override
     public void assertValid() throws SyntaxException {
@@ -22,7 +22,7 @@ public abstract class BaseBooleanStatement extends AbstractStatement implements 
     }
 
     @Override
-    public Object getArgumentJava() throws IllegalArgumentException {
+    public Boolean getArgumentJava() throws IllegalArgumentException {
         if (StringUtils.isBlank(argument)) {
             throw new SyntaxException("No value in config!");
         } else {

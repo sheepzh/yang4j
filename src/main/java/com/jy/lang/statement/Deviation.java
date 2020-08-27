@@ -1,6 +1,9 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.AbstractStatement;
+import com.jy.lang.BaseTextStatement;
 
-public class Deviation extends AbstractStatement {
+/**
+ * Section 7.18.3
+ */
+public class Deviation extends BaseTextStatement {
 }

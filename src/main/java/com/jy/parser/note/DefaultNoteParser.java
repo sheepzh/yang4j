@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author zhy
  */
-public class DefaultNodeParser implements NoteParser {
+public class DefaultNoteParser implements NoteParser {
     /**
      * States
      */
@@ -72,7 +72,11 @@ public class DefaultNodeParser implements NoteParser {
     }
 
     private static void trans(long inState, long ch, long outState) {
-        STATE_MATRIX.put(inState | ch << SHIFT_BIT, outState);
+        STATE_MATRIX.put(merge(inState, ch), outState);
+    }
+
+    private static Long merge(long state, long c) {
+        return state | c << SHIFT_BIT;
     }
 
     /**
@@ -80,14 +84,14 @@ public class DefaultNodeParser implements NoteParser {
      */
     private long current;
 
-    public DefaultNodeParser() {
+    public DefaultNoteParser() {
         current = INITIAL;
     }
 
     @Override
     public NoteParser accept(char c) {
-        Long result = STATE_MATRIX.get((long) c << SHIFT_BIT | c);
-        current = result == null ? STATE_MATRIX.get(current) : result;
+        Long result = STATE_MATRIX.get(merge(current, c));
+        current = result == null ? STATE_MATRIX.get(merge(current, NONE)) : result;
         return this;
     }
 

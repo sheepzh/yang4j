@@ -3,7 +3,7 @@ package com.jy.lang.statement;
 import com.jy.lang.BaseTextStatement;
 
 /**
- * Section 7.8.2
+ * Section 7.16.3
  */
-public class Key extends BaseTextStatement {
+public class Base extends BaseTextStatement {
 }

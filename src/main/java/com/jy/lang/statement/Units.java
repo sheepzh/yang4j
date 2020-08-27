@@ -1,6 +1,9 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.AbstractStatement;
+import com.jy.lang.BaseTextStatement;
 
-public class Units extends AbstractStatement {
+/**
+ * Section 7.3.3
+ */
+public class Units extends BaseTextStatement {
 }

@@ -2,11 +2,11 @@ package com.jy.lang.statement;
 
 import com.jy.SyntaxException;
 import com.jy.parser.Yang;
-import com.jy.parser.note.DefaultNodeParser;
+import com.jy.parser.note.DefaultNoteParser;
 import org.junit.Test;
 
 public class LeafTest {
-    Yang yang = new Yang().setNoteParser(new DefaultNodeParser());
+    Yang yang = new Yang().setNoteParser(new DefaultNoteParser());
 
     /**
      * Default value does not match type

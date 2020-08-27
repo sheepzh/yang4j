@@ -4,7 +4,7 @@ package com.jy.lang.constant;
  * Section 7.19.2
  * Argument enum set of status statement
  */
-public enum StatusEnumSet {
+public enum StatusEnum {
 
     /**
      * "current" means that the definition is current and valid.
@@ -22,5 +22,5 @@ public enum StatusEnumSet {
      */
     obsolete;
 
-    public static StatusEnumSet DEFAULT = current;
+    public static StatusEnum DEFAULT = current;
 }

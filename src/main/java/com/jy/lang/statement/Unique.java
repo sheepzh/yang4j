@@ -1,6 +1,9 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.AbstractStatement;
+import com.jy.lang.BaseTextStatement;
 
-public class Unique extends AbstractStatement {
+/**
+ * Section 7.8.3
+ */
+public class Unique extends BaseTextStatement {
 }

@@ -1,6 +1,22 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.AbstractStatement;
+import com.jy.SyntaxException;
+import com.jy.lang.BaseAppendableStatement;
 
-public class Import extends AbstractStatement {
+/**
+ * Section 7.1.5
+ */
+public class Import extends BaseAppendableStatement {
+    /**
+     * Must not be null
+     */
+    private Prefix prefix;
+
+    private RevisionDate revisionDate;
+
+    @Override
+    public void assertValid() throws SyntaxException {
+        super.assertValid();
+        required(prefix, Prefix.class);
+    }
 }

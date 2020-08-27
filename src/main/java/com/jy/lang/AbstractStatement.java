@@ -1,9 +1,5 @@
 package com.jy.lang;
 
-import com.jy.SyntaxException;
-import com.jy.util.NameUtil;
-
-
 /**
  * @author zhy
  */
@@ -30,12 +26,5 @@ public abstract class AbstractStatement implements Statement {
 
     public void setArgument(String argument) {
         this.argument = argument;
-    }
-
-    protected void notSupport(Statement child) {
-        throw new SyntaxException("%s is not support in %s",
-                NameUtil.java2Yang(child.getClass()),
-                NameUtil.java2Yang(this.getClass())
-        );
     }
 }

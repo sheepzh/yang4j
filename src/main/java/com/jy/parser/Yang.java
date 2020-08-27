@@ -6,7 +6,7 @@ import com.jy.lang.Statement;
 import com.jy.lang.StatementFactory;
 import com.jy.lang.statement.Anyxml;
 import com.jy.lang.statement.Rpc;
-import com.jy.parser.note.DefaultNodeParser;
+import com.jy.parser.note.DefaultNoteParser;
 import com.jy.util.CharUtils;
 import com.jy.util.NameUtil;
 
@@ -38,7 +38,7 @@ public class Yang {
     private int currentLine = 1;
 
     public Yang() {
-        this(new DefaultNodeParser());
+        this(new DefaultNoteParser());
     }
 
     public Yang(NoteParser noteParser) {
