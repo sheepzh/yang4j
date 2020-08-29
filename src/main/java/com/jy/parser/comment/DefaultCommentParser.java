@@ -1,17 +1,16 @@
-package com.jy.parser.note;
+package com.jy.parser.comment;
 
 import com.jy.SyntaxException;
-import com.jy.parser.NoteParser;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Default implementation of {@link NoteParser} with DFA, Deterministic Finite Automaton
+ * Default implementation of {@link CommentParser} with DFA, Deterministic Finite Automaton
  *
  * @author zhy
  */
-public class DefaultNoteParser implements NoteParser {
+public class DefaultCommentParser implements CommentParser {
     /**
      * States
      */
@@ -84,12 +83,12 @@ public class DefaultNoteParser implements NoteParser {
      */
     private long current;
 
-    public DefaultNoteParser() {
+    public DefaultCommentParser() {
         current = INITIAL;
     }
 
     @Override
-    public NoteParser accept(char c) {
+    public CommentParser accept(char c) {
         Long result = STATE_MATRIX.get(merge(current, c));
         current = result == null ? STATE_MATRIX.get(merge(current, NONE)) : result;
         return this;
@@ -104,7 +103,7 @@ public class DefaultNoteParser implements NoteParser {
     public void assertClose() throws SyntaxException {
         if (current != TWO_SLASHES) {
             // two slashes means closed also
-            NoteParser.super.assertClose();
+            CommentParser.super.assertClose();
         }
     }
 

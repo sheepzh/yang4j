@@ -20,7 +20,6 @@
     <packaging>jar</packaging>
 
     <name>jyang</name>
-    <url>http://maven.apache.org</url>
     <description>Jyang is a YANG module parser and generator written by Java</description>
 
     <properties>
@@ -44,6 +43,10 @@
         <developer>
             <id>zhy</id>
             <name>zhy</name>
+            <roles>
+                <role>master</role>
+                <role>developer</role>
+            </roles>
             <email>returnzhy1996@outlook.com</email>
         </developer>
     </developers>

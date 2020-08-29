@@ -1,27 +1,27 @@
-package com.jy.parser;
+package com.jy.parser.comment;
 
 import com.jy.SyntaxException;
 
 /**
- * YANG note parser
+ * YANG comment parser
  * <p>
- * For example:
- * boolean doNext = parser.accept('/').isClose()
+ * For usage example:
+ * boolean doNext = !parser.accept('/').isOpen()
  *
  * @author zhy
  */
-public interface NoteParser {
+public interface CommentParser {
     /**
      * Will accept one char as input
      *
      * @param c input char
      * @return this
      */
-    NoteParser accept(char c);
+    CommentParser accept(char c);
 
     /**
-     * Judge if the state of note is OPEN
-     * The char is open means that it won't be influential next, since as one token of current note.
+     * Judge if the state of comment is OPEN
+     * The char is open means that it won't be influential next, since as one token of current comment.
      *
      * @return true if open, or false
      */

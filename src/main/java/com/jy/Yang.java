@@ -1,12 +1,12 @@
-package com.jy.parser;
+package com.jy;
 
-import com.jy.SyntaxException;
 import com.jy.lang.ChildrenAppendable;
 import com.jy.lang.Statement;
 import com.jy.lang.StatementFactory;
 import com.jy.lang.statement.Anyxml;
 import com.jy.lang.statement.Rpc;
-import com.jy.parser.note.DefaultNoteParser;
+import com.jy.parser.comment.CommentParser;
+import com.jy.parser.comment.DefaultCommentParser;
 import com.jy.util.CharUtils;
 import com.jy.util.NameUtil;
 
@@ -14,15 +14,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Parser of YANG schema
+ * Parser of YANG schemas
  *
  * @author zhy
  */
 public class Yang {
 
-    private NoteParser noteParser;
+    /**
+     * Parser of comment
+     */
+    private CommentParser commentParser;
 
-    private String schema;
+    private String schemas;
 
     private final StringBuilder tokens = new StringBuilder();
 
@@ -32,24 +35,25 @@ public class Yang {
      */
     private Triple tail = null;
 
+    private Statement root = null;
+
     /**
-     * Current line of schema, for error logging
+     * Current line of schemas, for error logging
      */
     private int currentLine = 1;
 
     public Yang() {
-        this(new DefaultNoteParser());
+        this(new DefaultCommentParser());
     }
 
-    public Yang(NoteParser noteParser) {
-        this.noteParser = noteParser;
+    public Yang(CommentParser commentParser) {
+        this.commentParser = commentParser;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Statement> T build() {
+    public Yang compile() {
         init();
         boolean quoted = false;
-        for (char c : schema.toCharArray()) {
+        for (char c : schemas.toCharArray()) {
             if (c == '\n') currentLine++;
             // double quote
             if (quoted) {
@@ -58,7 +62,7 @@ public class Yang {
                 continue;
             }
             // note
-            if (noteParser.accept(c).isOpen()) {
+            if (commentParser.accept(c).isOpen()) {
                 continue;
             }
             if (CharUtils.isNotBlank(c)) {
@@ -92,15 +96,18 @@ public class Yang {
                 resolveTokens();
             }
         }
-        noteParser.assertClose();
-        return (T) generate(this.tail);
+        commentParser.assertClose();
+        this.root = build0(this.tail);
+        this.root.assertValid();
+        return this;
     }
 
     private void init() {
         currentLine = 1;
-        noteParser.initialize();
+        commentParser.initialize();
         buf = null;
         tail = null;
+        root = null;
     }
 
     /**
@@ -172,7 +179,7 @@ public class Yang {
         return result;
     }
 
-    private Statement generate(Triple triple) {
+    private Statement build0(Triple triple) {
         StatementFactory factory = StatementFactory.getInstance();
         Statement result = null;
         if (triple != null) {
@@ -181,9 +188,9 @@ public class Yang {
             if (children != null && children.size() > 0) {
                 if (result instanceof ChildrenAppendable) {
                     ChildrenAppendable appendable = (ChildrenAppendable) result;
-                    children.stream().map(this::generate).forEach(appendable::append);
+                    children.stream().map(this::build0).forEach(appendable::append);
                 } else {
-                    throw new SyntaxException("'%s' mustn't contain any substatements, but found in the schema",
+                    throw new SyntaxException("'%s' mustn't contain any substatements, but found in the schemas",
                             NameUtil.java2Yang(result.getClass())
                     );
                 }
@@ -192,22 +199,31 @@ public class Yang {
         return result;
     }
 
-    public NoteParser getNoteParser() {
-        return noteParser;
+    public CommentParser getCommentParser() {
+        return commentParser;
     }
 
-    public Yang setNoteParser(NoteParser noteParser) {
-        this.noteParser = noteParser;
+    public Yang setCommentParser(CommentParser commentParser) {
+        this.commentParser = commentParser;
         return this;
     }
 
     public String getSchema() {
-        return schema;
+        return schemas;
     }
 
-    public Yang setSchema(String schema) {
-        this.schema = schema;
+    public Yang setSchemas(String schemas) {
+        this.schemas = schemas;
+        this.init();
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getRoot() {
+        if (root == null) {
+            throw new RuntimeException();
+        }
+        return (T) root;
     }
 
     /**
@@ -233,7 +249,7 @@ public class Yang {
     }
 
     public static void main(String[] s) {
-        String schema = "" +
+        String schemas = "" +
                 "rpc activate-software-image {\n" +
                 "  input {\n" +
                 "    leaf image-name {\n" +
@@ -247,10 +263,10 @@ public class Yang {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        String schema2 = "anyxml 23123 { config \"true\" ; }";
+        String schemas2 = "anyxml 23123 { config \"true\" ; }";
 
         Yang yang = new Yang();
-        Rpc rpc = yang.setSchema(schema).build();
-        Anyxml anyxml = yang.setSchema(schema2).build();
+        Rpc rpc = yang.setSchemas(schemas).compile().getRoot();
+        Anyxml anyxml = yang.setSchemas(schemas2).compile().getRoot();
     }
 }

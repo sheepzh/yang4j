@@ -1,8 +1,6 @@
 package com.jy.lang.statement;
 
-import com.jy.SyntaxException;
 import com.jy.lang.BaseAppendableStatement;
-import com.jy.lang.BuiltInType;
 import com.jy.lang.annotation.AliasFor;
 
 import java.util.List;
@@ -32,17 +30,7 @@ public class Leaf extends BaseAppendableStatement {
     public void assertValid() {
         super.assertValid();
         required(type, Type.class);
-        BuiltInType<?> builtInType = type.getArgumentJava();
-        if (defaultS != null) {
-            String argument = defaultS.getArgument();
-            try {
-                builtInType.fromArgument(argument);
-            } catch (IllegalArgumentException | SyntaxException e) {
-                throw new SyntaxException(e,
-                        "The value of 'default' doest match this type: type=%s, default=%s",
-                        argument, type.getArgument());
-            }
-        }
+        assertDefault(type, defaultS);
     }
 
     public Type getType() {

@@ -1,10 +1,11 @@
-package com.jy.parser;
+package com.jy.parser.comment;
 
-import com.jy.parser.note.DefaultNoteParser;
+import com.jy.parser.comment.CommentParser;
+import com.jy.parser.comment.DefaultCommentParser;
 import org.junit.Test;
 
-public class NoteParserTest {
-    private final NoteParser parser = new DefaultNoteParser();
+public class CommentParserTest {
+    private final CommentParser parser = new DefaultCommentParser();
 
     @Test
     public void t1() {

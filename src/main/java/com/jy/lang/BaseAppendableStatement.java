@@ -1,6 +1,7 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
+import com.jy.lang.statement.Default;
 import com.jy.util.NameUtil;
 
 import java.lang.reflect.Field;
@@ -28,6 +29,22 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
         if (s == null) {
             throw new SyntaxException("'%s' is required in '%s'",
                     NameUtil.java2Yang(clz), NameUtil.java2Yang(this.getClass()));
+        }
+    }
+
+    /**
+     * Assert the default value matches the type
+     */
+    protected final void assertDefault(com.jy.lang.statement.Type type, Default defaultVal) {
+        if (defaultVal != null) {
+            BuiltInType<?> builtInType = type.getArgumentJava();
+            try {
+                builtInType.fromArgument(defaultVal.getArgument());
+            } catch (IllegalArgumentException | SyntaxException e) {
+                throw new SyntaxException(e,
+                        "The value of 'default' doest match this type: type=%s, default=%s",
+                        argument, type.getArgument());
+            }
         }
     }
 

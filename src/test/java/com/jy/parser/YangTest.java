@@ -1,6 +1,7 @@
 package com.jy.parser;
 
 import com.jy.SyntaxException;
+import com.jy.Yang;
 import org.junit.Test;
 
 public class YangTest {
@@ -53,7 +54,7 @@ public class YangTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
     }
 
     @Test(expected = SyntaxException.class)
@@ -72,6 +73,6 @@ public class YangTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
     }
 }

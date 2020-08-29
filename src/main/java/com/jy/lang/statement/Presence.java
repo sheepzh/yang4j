@@ -1,6 +1,9 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.AbstractStatement;
+import com.jy.lang.BaseTextStatement;
 
-public class Presence extends AbstractStatement {
+/**
+ * Section 7.5.5
+ */
+public class Presence extends BaseTextStatement {
 }

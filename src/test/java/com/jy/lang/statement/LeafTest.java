@@ -1,12 +1,12 @@
 package com.jy.lang.statement;
 
 import com.jy.SyntaxException;
-import com.jy.parser.Yang;
-import com.jy.parser.note.DefaultNoteParser;
+import com.jy.Yang;
+import com.jy.parser.comment.DefaultCommentParser;
 import org.junit.Test;
 
 public class LeafTest {
-    Yang yang = new Yang().setNoteParser(new DefaultNoteParser());
+    Yang yang = new Yang().setCommentParser(new DefaultCommentParser());
 
     /**
      * Default value does not match type
@@ -14,7 +14,7 @@ public class LeafTest {
     @Test(expected = SyntaxException.class)
     public void t1() {
         String schema = "leaf test-leaf{ type boolean; default 1;}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
     }
 
     /**
@@ -23,9 +23,9 @@ public class LeafTest {
     @Test
     public void t2() {
         String schema = "leaf test-leaf{ type boolean; default true;}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
         schema = "leaf test-leaf{ type int8;default 2;}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
     }
 
     /**
@@ -34,6 +34,6 @@ public class LeafTest {
     @Test(expected = SyntaxException.class)
     public void t3() {
         String schema = "leaf test{}";
-        yang.setSchema(schema).build().assertValid();
+        yang.setSchemas(schema).compile();
     }
 }
