@@ -17,7 +17,7 @@ String schemas = "" +
  　　"}";
 
 // 1st, generate the memory module from schemas.
-Yang yang = new Yang().setSchemas(schemas).build();
+Yang yang = new Yang(schemas);
 
 // 2nd, obtain the module.
 Module module = yang.getRoot();
