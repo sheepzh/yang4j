@@ -1,4 +1,4 @@
-package com.jy.lang;
+package com.jy;
 
 public class NoSchemasException extends RuntimeException {
     public NoSchemasException() {

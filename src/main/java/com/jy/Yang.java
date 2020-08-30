@@ -68,13 +68,13 @@ public class Yang {
             if (CharUtils.isNotBlank(c)) {
                 // Regard blank character between quotes as one token
                 if (c == '{') {
-                    resolveTokens();
+                    reduce();
                     if (emptyTriple()) {
                         throw new SyntaxException("Need keyword [ argument ] before '{' in line %d!", currentLine);
                     }
                     push();
                 } else if (c == ';') {
-                    resolveTokens();
+                    reduce();
                     if (emptyTriple()) {
                         throw new SyntaxException("Need keyword [ argument ] before ';' in line %d!", currentLine);
                     }
@@ -93,7 +93,7 @@ public class Yang {
                     tokens.append(c);
                 }
             } else {
-                resolveTokens();
+                reduce();
             }
         }
         commentParser.assertClose();
@@ -111,9 +111,9 @@ public class Yang {
     }
 
     /**
-     * Resolve tokens
+     * Reduce tokens to the argument or the keyword
      */
-    private void resolveTokens() {
+    private void reduce() {
         if (tokens.length() > 0) {
             if (buf == null) {
                 buf = new Triple();
