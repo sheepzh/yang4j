@@ -1,9 +1,18 @@
 package com.jy.lang.statement;
 
-import com.jy.lang.BaseTextStatement;
+import com.jy.lang.BaseAppendableStatement;
 
 /**
- * Section 7.12.2
+ * 7.12.2
  */
-public class Refine extends BaseTextStatement {
+public class Refine extends BaseAppendableStatement {
+    private Description description;
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
 }

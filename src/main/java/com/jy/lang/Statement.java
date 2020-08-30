@@ -11,10 +11,6 @@ import com.jy.util.StringUtils;
  */
 public interface Statement {
 
-    String getKeyword();
-
-    void setKeyword(String keyword);
-
     String getArgument();
 
     void setArgument(String argument);
@@ -25,9 +21,6 @@ public interface Statement {
      * @throws SyntaxException while not invalid
      */
     default void assertValid() throws SyntaxException {
-        if (StringUtils.isBlank(getKeyword())) {
-            throw new SyntaxException("No keyword");
-        }
         if (StringUtils.isBlank(getArgument())) {
             throw new SyntaxException("No argument on the %s statement", NameUtil.java2Yang(this.getClass()));
         }
