@@ -4,6 +4,8 @@ import com.jy.SyntaxException;
 import com.jy.util.NameUtil;
 import com.jy.util.StringUtils;
 
+import java.util.List;
+
 /**
  * statement = keyword [argument] (";" /"{" *statement "}" )
  *
@@ -15,6 +17,10 @@ public interface Statement {
 
     void setArgument(String argument);
 
+    Statement getParent();
+
+    void setParent(Statement parent);
+
     /**
      * Assert that this is one valid statement
      *
@@ -24,5 +30,25 @@ public interface Statement {
         if (StringUtils.isBlank(getArgument())) {
             throw new SyntaxException("No argument on the %s statement", NameUtil.java2Yang(this.getClass()));
         }
+    }
+
+    /**
+     * @param clz child statement class
+     * @param <T> child statement type
+     * @return child statement
+     * @throws IllegalArgumentException while this statement must not contain this child
+     */
+    default <T extends Statement> T get(Class<T> clz) {
+        throw new IllegalArgumentException("No such child statement");
+    }
+
+    /**
+     * @param clz child statement class
+     * @param <T> child statement type
+     * @return children statement
+     * @throws IllegalArgumentException while this statement must not contain this child
+     */
+    default <T extends Statement> List<T> getList(Class<T> clz) {
+        throw new IllegalArgumentException("No such child statements");
     }
 }

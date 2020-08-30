@@ -70,11 +70,20 @@ public class StatementFactory {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if the keyword is illegal
+     */
+    public Statement product(String keyword) {
+        return product(keyword, null);
+    }
+
+    /**
+     * @throws IllegalArgumentException if the keyword is illegal
+     */
     public Statement product(String keyword, String argument) {
         Supplier<? extends Statement> constructor = constructorMap.get(keyword);
-        if (constructor == null) throw new SyntaxException("Unknown keyword: %s", keyword);
+        if (constructor == null) throw new IllegalArgumentException("Illegal keyword: " + keyword);
         Statement result = constructor.get();
-        result.setKeyword(keyword);
         result.setArgument(argument);
         return result;
     }

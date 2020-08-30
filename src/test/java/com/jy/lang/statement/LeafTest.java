@@ -6,7 +6,6 @@ import com.jy.parser.comment.DefaultCommentParser;
 import org.junit.Test;
 
 public class LeafTest {
-    Yang yang = new Yang().setCommentParser(new DefaultCommentParser());
 
     /**
      * Default value does not match type
@@ -14,7 +13,7 @@ public class LeafTest {
     @Test(expected = SyntaxException.class)
     public void t1() {
         String schema = "leaf test-leaf{ type boolean; default 1;}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
     }
 
     /**
@@ -23,9 +22,9 @@ public class LeafTest {
     @Test
     public void t2() {
         String schema = "leaf test-leaf{ type boolean; default true;}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
         schema = "leaf test-leaf{ type int8;default 2;}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
     }
 
     /**
@@ -34,6 +33,6 @@ public class LeafTest {
     @Test(expected = SyntaxException.class)
     public void t3() {
         String schema = "leaf test{}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
     }
 }

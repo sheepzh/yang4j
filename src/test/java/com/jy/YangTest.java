@@ -1,11 +1,8 @@
-package com.jy.parser;
+package com.jy;
 
-import com.jy.SyntaxException;
-import com.jy.Yang;
 import org.junit.Test;
 
 public class YangTest {
-    Yang yang = new Yang();
 
     @Test
     public void rpc() {
@@ -54,7 +51,7 @@ public class YangTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
     }
 
     @Test(expected = SyntaxException.class)
@@ -73,6 +70,6 @@ public class YangTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        yang.setSchemas(schema).compile();
+        new Yang(schema);
     }
 }

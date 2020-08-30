@@ -1,7 +1,5 @@
 package com.jy.lang;
 
-import com.jy.SyntaxException;
-
 /**
  * Statements which can contains children
  */
@@ -12,10 +10,10 @@ public interface ChildrenAppendable extends Statement {
      *
      * @param s   tail child
      * @param <T> s type
-     * @throws SyntaxException      while syntax error happens
-     * @throws NullPointerException while param s is null
+     * @throws IllegalArgumentException if this statement must not contain this substatement
+     * @throws NullPointerException     if param s is null
      */
-    <T extends Statement> void append(T s) throws SyntaxException, NullPointerException;
+    <T extends Statement> void append(T s) throws IllegalArgumentException, NullPointerException;
 
     /**
      * Get the identifier of this statement, always means its argument

@@ -111,8 +111,46 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
                     // Never happen
                     dealIllegalAccessException(e);
                 }
+            } else {
+                throw new IllegalArgumentException("Can't append!");
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> T get(Class<T> clz) {
+        initSubFieldType();
+        Map<Class<?>, Field> fieldMap = SUB_FIELD_MAP.get(this.getClass());
+        Field field = fieldMap.get(clz);
+        if (field == null) {
+            return super.get(clz);
+        }
+        try {
+            return (T) field.get(this);
+        } catch (IllegalAccessException e) {
+            // never happen
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> List<T> getList(Class<T> clz) {
+        initSubFieldType();
+        Map<Class<?>, Field> fieldMap = LIST_SUB_FIELD_MAP.get(this.getClass());
+        Field field = fieldMap.get(clz);
+        if (field == null) {
+            return super.getList(clz);
+        }
+        try {
+            return (List<T>) field.get(this);
+        } catch (IllegalAccessException e) {
+            // never happen
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void dealIllegalAccessException(IllegalAccessException iae) {
