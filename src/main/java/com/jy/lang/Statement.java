@@ -1,7 +1,6 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
-import com.jy.util.NameUtil;
 import com.jy.util.StringUtils;
 
 import java.util.List;
@@ -22,13 +21,22 @@ public interface Statement {
     void setParent(Statement parent);
 
     /**
-     * Assert that this is one valid statement
+     * Assert that the child nodes is legal
      *
-     * @throws SyntaxException while not invalid
+     * @throws SyntaxException if illegal
      */
-    default void assertValid() throws SyntaxException {
+    default void assertChild() throws SyntaxException {
+        // do nothing
+    }
+
+    /**
+     * Assert that the argument is legal
+     *
+     * @throws SyntaxException if illegal
+     */
+    default void assertArgument() throws SyntaxException {
         if (StringUtils.isBlank(getArgument())) {
-            throw new SyntaxException("No argument on the %s statement", NameUtil.java2Yang(this.getClass()));
+            throw new SyntaxException("No argument!");
         }
     }
 

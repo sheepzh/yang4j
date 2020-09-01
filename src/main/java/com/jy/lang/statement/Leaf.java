@@ -27,8 +27,8 @@ public class Leaf extends BaseAppendableStatement {
     private When when;
 
     @Override
-    public void assertValid() {
-        super.assertValid();
+    public void assertChild() {
+        super.assertChild();
         required(type, Type.class);
         assertDefault(type, defaultS);
     }

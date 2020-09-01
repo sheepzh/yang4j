@@ -2,8 +2,8 @@ package com.jy.lang.statement;
 
 import com.jy.SyntaxException;
 import com.jy.lang.AbstractStatement;
-import com.jy.lang.BuiltInType;
-import com.jy.lang.BuiltInTypeFactory;
+import com.jy.lang.builtin.BuiltInType;
+import com.jy.lang.builtin.BuiltInTypeFactory;
 import com.jy.lang.Valuable;
 
 /**
@@ -11,7 +11,7 @@ import com.jy.lang.Valuable;
  */
 public class Type extends AbstractStatement implements Valuable<BuiltInType<?>> {
     @Override
-    public void assertValid() throws SyntaxException {
+    public void assertChild() throws SyntaxException {
         assertValid0();
     }
 

@@ -1,5 +1,7 @@
 package com.jy.lang;
 
+import com.jy.lang.builtin.BuiltInType;
+
 /**
  * The statements which takes as an argument a string
  */

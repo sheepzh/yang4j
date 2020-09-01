@@ -44,8 +44,8 @@ public class Module extends BaseAppendableStatement {
     private List<Uses> usesList;
 
     @Override
-    public void assertValid() throws SyntaxException {
-        super.assertValid();
+    public void assertChild() throws SyntaxException {
+        super.assertChild();
         required(namespace, Namespace.class);
         required(prefix, Prefix.class);
     }

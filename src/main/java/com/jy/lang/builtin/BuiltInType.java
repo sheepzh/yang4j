@@ -1,4 +1,4 @@
-package com.jy.lang;
+package com.jy.lang.builtin;
 
 import com.jy.SyntaxException;
 import com.jy.util.StringUtils;
@@ -19,9 +19,9 @@ public interface BuiltInType<T> {
      *
      * @param value the statement value
      * @return the java variable
-     * @throws IllegalArgumentException while value is illegal
+     * @throws IllegalArgumentException if value is illegal
      */
-    T fromArgument(String value) throws SyntaxException, IllegalArgumentException;
+    T fromArgument(String value) throws IllegalArgumentException;
 
     /**
      * Wrap the common exception
@@ -38,17 +38,21 @@ public interface BuiltInType<T> {
     // Constants
 
     /**
-     * Any binary data
+     * Any binary data => unsigned long value
      */
-    BuiltInType<BitSet> BINARY = value -> {
+    BuiltInType<Long> BINARY = value -> {
+        value = value.trim();
         char[] chars = value.toCharArray();
         int length = chars.length;
-        BitSet result = new BitSet(length);
-        for (int i = 0; i < length; i++) {
-            char c = chars[i];
-            if (c == '0' || c == '1') {
-                result.set(i, c == '1');
-            } else throw formatException("BINARY", value, null);
+        if (chars.length > Long.SIZE) {
+            throw new NumberFormatException("BINARY is too long: " + length + ", '" + value + "'");
+        }
+        long result = 0;
+        for (char c : chars) {
+            if (c != '0' && c != '1') {
+                throw formatException("BINARY", value, null);
+            }
+            result = result << 1 | (c - '0');
         }
         return result;
     };

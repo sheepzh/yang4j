@@ -1,6 +1,7 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
+import com.jy.lang.builtin.BuiltInType;
 import com.jy.lang.statement.Default;
 import com.jy.util.NameUtil;
 
@@ -50,7 +51,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public void assertValid() throws SyntaxException {
+    public void assertChild() throws SyntaxException {
         initSubFieldType();
         initSubListFieldType();
         Class<? extends BaseAppendableStatement> thisClz = this.getClass();
@@ -58,7 +59,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
             try {
                 Statement child = (Statement) f.get(this);
                 if (child != null) {
-                    child.assertValid();
+                    child.assertChild();
                 }
             } catch (IllegalAccessException e) {
                 // Never happen
@@ -69,7 +70,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
             try {
                 List<Statement> childList = (List<Statement>) f.get(this);
                 if (childList != null) {
-                    childList.forEach(Statement::assertValid);
+                    childList.forEach(Statement::assertChild);
                 }
             } catch (IllegalAccessException e) {
                 // Never happen
@@ -112,7 +113,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
                     dealIllegalAccessException(e);
                 }
             } else {
-                throw new IllegalArgumentException("Can't append!");
+                throw new IllegalArgumentException("Failed to append substatement!");
             }
         }
     }
@@ -225,7 +226,7 @@ public abstract class BaseAppendableStatement extends AbstractStatement implemen
             if (one == null) {
                 return false;
             } else if (!checked.contains(one)) {
-                if (one == statementClz || one.isAssignableFrom(statementClz)) {
+                if (one == statementClz || statementClz.isAssignableFrom(one)) {
                     return true;
                 }
                 for (Class<?> in : one.getInterfaces()) {

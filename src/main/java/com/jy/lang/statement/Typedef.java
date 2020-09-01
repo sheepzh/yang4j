@@ -19,8 +19,8 @@ public class Typedef extends BaseAppendableStatement {
     private Units units;
 
     @Override
-    public void assertValid() throws SyntaxException {
-        super.assertValid();
+    public void assertChild() throws SyntaxException {
+        super.assertChild();
         required(type, Type.class);
         assertDefault(type, defaultS);
     }

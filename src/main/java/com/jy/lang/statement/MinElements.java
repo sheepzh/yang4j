@@ -15,7 +15,7 @@ public class MinElements extends AbstractStatement implements Valuable<Integer> 
             new SyntaxException("The argument of 'min-elements' must be a non-negative integer");
 
     @Override
-    public void assertValid() throws SyntaxException {
+    public void assertChild() throws SyntaxException {
         assertValid0();
     }
 

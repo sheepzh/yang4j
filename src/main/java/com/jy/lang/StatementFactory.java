@@ -37,7 +37,7 @@ public class StatementFactory {
                 Default.class, Description.class,
                 Input.class,
                 Key.class,
-                Leaf.class, LeafList.class, ListS.class,
+                Leaf.class, LeafList.class, Length.class, ListS.class,
                 Module.class,
                 Namespace.class,
                 Organization.class, Output.class,

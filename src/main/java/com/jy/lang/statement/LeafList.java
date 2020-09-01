@@ -27,8 +27,8 @@ public class LeafList extends BaseAppendableStatement {
     private When when;
 
     @Override
-    public void assertValid() throws SyntaxException {
-        super.assertValid();
+    public void assertChild() throws SyntaxException {
+        super.assertChild();
         required(type, Type.class);
     }
 

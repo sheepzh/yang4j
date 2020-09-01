@@ -93,7 +93,7 @@ public class DefaultSchemasParser implements SchemasParser {
         if (quoted) {
             throw new SyntaxException("Double quoted is not close at the end!");
         }
-        result.assertValid();
+        result.assertChild();
 
         return result;
     }
@@ -122,6 +122,11 @@ public class DefaultSchemasParser implements SchemasParser {
                 }
             } else {
                 buf.setArgument(word);
+                try {
+                    buf.assertArgument();
+                } catch (SyntaxException se) {
+                    throw new SyntaxException("Argument error in line %s: " + se.getMessage(), currentLine);
+                }
             }
             // Clean the tokens
             tokens.delete(0, tokens.length());

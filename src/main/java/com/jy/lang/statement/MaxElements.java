@@ -13,7 +13,7 @@ public class MaxElements extends AbstractStatement implements Valuable<Integer> 
             new SyntaxException("The argument of 'max-elements' must be a positive integer or the string 'unbounded'");
 
     @Override
-    public void assertValid() throws SyntaxException {
+    public void assertChild() throws SyntaxException {
         assertValid0();
     }
 

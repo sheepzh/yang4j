@@ -15,8 +15,8 @@ public class Import extends BaseAppendableStatement {
     private RevisionDate revisionDate;
 
     @Override
-    public void assertValid() throws SyntaxException {
-        super.assertValid();
+    public void assertChild() throws SyntaxException {
+        super.assertChild();
         required(prefix, Prefix.class);
     }
 }
