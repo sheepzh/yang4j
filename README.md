@@ -20,3 +20,9 @@ Yang yang = new Yang(schemas);
 + YANG to YIN, YIN to YANG
 + Generate a structure XML of memory model
 + Interface of translator framework for other languages, such as JSON, Java etc.
+
+### Compatibility
+
+Yang4J is compatible with all the following RFCs:
+
++ RFC 6020 YANG - A Data Modeling Language for the Network Configuration Protocol

@@ -1,9 +1,6 @@
 package com.jy;
 
 import com.jy.lang.Statement;
-import com.jy.lang.statement.Description;
-import com.jy.lang.statement.Module;
-import com.jy.lang.statement.Rpc;
 import com.jy.parser.DefaultSchemasParser;
 import com.jy.parser.SchemasParser;
 import com.jy.parser.comment.CommentParser;
