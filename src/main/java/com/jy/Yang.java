@@ -1,7 +1,8 @@
 package com.jy;
 
 import com.jy.lang.Statement;
-import com.jy.lang.statement.Anyxml;
+import com.jy.lang.statement.Description;
+import com.jy.lang.statement.Module;
 import com.jy.lang.statement.Rpc;
 import com.jy.parser.DefaultSchemasParser;
 import com.jy.parser.SchemasParser;
@@ -53,26 +54,5 @@ public class Yang {
         if (commentParser == null) commentParser = new DefaultCommentParser();
 
         return schemasParser.setCommentParser(commentParser).parse(schemas);
-    }
-
-    public static void main(String[] s) {
-        String schemas = "" +
-                "rpc activate-software-image {\n" +
-                "  input {\n" +
-                "    leaf image-name 1 {\n" +
-                "      type string;\n" +
-                "    }\n" +
-                "  }\n" +
-                "  output {\n" +
-                "    leaf status {\n" +
-                "      type boolean;\n" +
-                "      default true;" +
-                "    }\n" +
-                "  }\n" +
-                "}";
-        String schemas2 = "anyxml 23123 { config \"true\" ; }";
-
-        Yang yang = new Yang(schemas);
-        yang.getRoot().assertValid();
     }
 }
