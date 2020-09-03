@@ -1,6 +1,5 @@
 package com.jy.lang.builtin;
 
-import com.jy.SyntaxException;
 import com.jy.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -45,12 +44,12 @@ public interface BuiltInType<T> {
         char[] chars = value.toCharArray();
         int length = chars.length;
         if (chars.length > Long.SIZE) {
-            throw new NumberFormatException("BINARY is too long: " + length + ", '" + value + "'");
+            throw new NumberFormatException("'binary' is too long: " + length + ", '" + value + "'");
         }
         long result = 0;
         for (char c : chars) {
             if (c != '0' && c != '1') {
-                throw formatException("BINARY", value, null);
+                throw formatException("binary", value, null);
             }
             result = result << 1 | (c - '0');
         }
@@ -63,8 +62,7 @@ public interface BuiltInType<T> {
     BuiltInType<BitSet> BITS = value -> BitSet.valueOf(value.getBytes());
 
     /**
-     * "true" or "false"
-     * Case insensitive
+     * "true" or "false", case insensitive in section 9.5.1, RFC 6020
      */
     BuiltInType<Boolean> BOOLEAN = value -> {
         if ("true".equals(value)) {
@@ -79,7 +77,7 @@ public interface BuiltInType<T> {
     /**
      * 64-bit signed decimal number
      */
-    BuiltInType<BigDecimal> DECIMAL_64 = value -> {
+    BuiltInType<BigDecimal> DECIMAL64 = value -> {
         try {
             return new BigDecimal(value);
         } catch (NumberFormatException ne) {
@@ -92,7 +90,7 @@ public interface BuiltInType<T> {
      */
     BuiltInType<Object> EMPTY = value -> {
         if (!StringUtils.isBlank(value)) {
-            throw new IllegalArgumentException("EMPTY mustn't have any value: " + value);
+            throw new IllegalArgumentException("'empty' mustn't have any value: " + value);
         }
         return null;
     };
@@ -110,13 +108,18 @@ public interface BuiltInType<T> {
 
     BuiltInType<Byte> INT8 = value -> {
         try {
-            return Byte.valueOf(value);
+            if (value.startsWith("0")) {
+                return Byte.valueOf(value, 8);
+            } else if (value.startsWith("0x")) {
+                return Byte.valueOf(value, 16);
+            } else
+                return Byte.valueOf(value);
         } catch (NumberFormatException ne) {
             throw formatException("INT_8", value, ne);
         }
     };
 
-    BuiltInType<Short> INT_16 = value -> {
+    BuiltInType<Short> INT16 = value -> {
         try {
             return Short.valueOf(value);
         } catch (NumberFormatException ne) {
@@ -124,7 +127,7 @@ public interface BuiltInType<T> {
         }
     };
 
-    BuiltInType<Integer> INT_32 = value -> {
+    BuiltInType<Integer> INT32 = value -> {
         try {
             return Integer.valueOf(value);
         } catch (NumberFormatException ne) {
@@ -132,7 +135,7 @@ public interface BuiltInType<T> {
         }
     };
 
-    BuiltInType<Long> INT_64 = value -> {
+    BuiltInType<Long> INT64 = value -> {
         try {
             return Long.valueOf(value);
         } catch (NumberFormatException ne) {
@@ -140,18 +143,21 @@ public interface BuiltInType<T> {
         }
     };
 
+
+    // todo all the UINTs need lexers
+    // Section 9.2
     BuiltInType<Short> UINT8 = value -> {
         try {
             short result = Short.parseShort(value);
             if (result > ((short) Byte.MAX_VALUE << 1 | 1) || result < 0)
-                throw formatException("UINT_8", value, null);
+                throw formatException("unit8", value, null);
             return result;
         } catch (NumberFormatException ne) {
-            throw formatException("UINT_8", value, ne);
+            throw formatException("unit8", value, ne);
         }
     };
 
-    BuiltInType<Integer> UINT_16 = value -> {
+    BuiltInType<Integer> UINT16 = value -> {
         try {
             int result = Integer.parseInt(value);
             if (result > ((int) Short.MAX_VALUE << 1 | 1) || result < 0)
@@ -162,8 +168,16 @@ public interface BuiltInType<T> {
         }
     };
 
+    BuiltInType<Long> UINT32 = Long::valueOf;
+
+    BuiltInType<Long> UINT64 = Long::valueOf;
+
     /**
+     * Section 9.4, RFC 6020
      * Human-readable string
+     * <p>
+     * string = *char
+     * char = 0x9 / 0xA / 0xD / 0x20-0xD7FF / 0xE000-0xFFFD / 0x10000-0x10FFFF
      */
     BuiltInType<String> STRING = value -> value;
 }

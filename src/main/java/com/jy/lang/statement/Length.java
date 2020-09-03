@@ -12,6 +12,8 @@ import java.util.List;
 public class Length extends BaseAppendableStatement {
     public static int LENGTH_MAX = Integer.MAX_VALUE;
     public static int LENGTH_MIN = Integer.MIN_VALUE;
+    private static final String LENGTH_MAX_STR = "max";
+    private static final String LENGTH_MIN_STR = "min";
 
     // substatements
     private Description description;
@@ -56,13 +58,20 @@ public class Length extends BaseAppendableStatement {
         super.assertArgument();
         lengthList.clear();
         String[] strings = argument.split("\\|");
+        // Section 9.4.4, RFC 6020
+        // If multiple values or ranges are given, they all MUST be disjoint and MUST be in ascending order.
+        long previousMax = -1;
         for (String str : strings) {
             String[] nums = str.split("\\.\\.");
             if (nums.length == 1) {
+                long val = parseToLong(str);
+                previousMax = assertAscending(previousMax, val);
                 lengthList.add(new long[]{parseToLong(str)});
             } else if (nums.length == 2) {
                 long left = parseToLong(nums[0]);
                 long right = parseToLong(nums[1]);
+                previousMax = assertAscending(previousMax, left);
+                previousMax = assertAscending(previousMax, right);
                 if (left == right) {
                     lengthList.add(new long[]{left});
                 } else if (left < right) {
@@ -76,8 +85,8 @@ public class Length extends BaseAppendableStatement {
 
     private long parseToLong(String str) {
         str = str.trim();
-        if (str.equals("max")) return LENGTH_MAX;
-        else if (str.equals("min")) return LENGTH_MIN;
+        if (LENGTH_MAX_STR.equals(str)) return LENGTH_MAX;
+        else if (LENGTH_MIN_STR.equals(str)) return LENGTH_MIN;
         else {
             try {
                 long result = Long.parseLong(str);
@@ -87,6 +96,21 @@ public class Length extends BaseAppendableStatement {
                 throw new SyntaxException("'%s'", str);
             }
         }
+    }
+
+    private long assertAscending(long previous, long newVal) {
+        if (newVal <= previous) {
+            throw new SyntaxException("It's not in ascending order that '%s' is before '%s'.",
+                    longToMaxOrMin(previous), longToMaxOrMin(newVal)
+            );
+        }
+        return newVal;
+    }
+
+    private String longToMaxOrMin(long val) {
+        if (val == LENGTH_MAX) return LENGTH_MAX_STR;
+        if (val == LENGTH_MIN) return LENGTH_MIN_STR;
+        return String.valueOf(val);
     }
 
     private final List<long[]> lengthList = new LinkedList<>();

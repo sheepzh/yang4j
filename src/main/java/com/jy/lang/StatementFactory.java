@@ -41,7 +41,7 @@ public class StatementFactory {
                 Module.class,
                 Namespace.class,
                 Organization.class, Output.class,
-                Prefix.class,
+                Pattern.class, Prefix.class,
                 Revision.class, Rpc.class,
                 Type.class
         );

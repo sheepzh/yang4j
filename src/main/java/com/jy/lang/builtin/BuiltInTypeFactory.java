@@ -1,10 +1,13 @@
 package com.jy.lang.builtin;
 
 import com.jy.lang.annotation.AliasFor;
+import com.jy.lang.statement.Typedef;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author zhy
@@ -56,5 +59,24 @@ public class BuiltInTypeFactory {
      */
     public BuiltInType<?> product(String yangText) {
         return allBuiltInType.get(yangText);
+    }
+
+    /**
+     * Get the BuiltInType instance as the text in YANG schema
+     *
+     * @param yangText     YANG text
+     * @param derivedTypes types derived"
+     * @return instance or null
+     */
+    public BuiltInType<?> product(String yangText, List<Typedef> derivedTypes) {
+        BuiltInType<?> result = product(yangText);
+        if (result == null) {
+            for (Typedef typedef : derivedTypes) {
+                if (Objects.equals(yangText, typedef.getArgument())) {
+                    return typedef.getType().getArgumentJava();
+                }
+            }
+        }
+        return result;
     }
 }

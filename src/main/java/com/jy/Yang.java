@@ -1,6 +1,7 @@
 package com.jy;
 
 import com.jy.lang.Statement;
+import com.jy.parser.Context;
 import com.jy.parser.DefaultSchemasParser;
 import com.jy.parser.SchemasParser;
 import com.jy.parser.comment.CommentParser;
@@ -19,6 +20,8 @@ public class Yang {
     private final Statement root;
 
     private final String schemas;
+
+    private final Context context = new Context();
 
     public Yang(String schemas) {
         this(schemas, new Config());
@@ -40,6 +43,11 @@ public class Yang {
 
     @SuppressWarnings("unchecked")
     public <T extends Statement> T getRoot() {
+        return (T) root;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> T getRoot(Class<T> clz) {
         return (T) root;
     }
 

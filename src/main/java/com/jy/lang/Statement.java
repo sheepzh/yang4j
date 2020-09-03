@@ -1,6 +1,7 @@
 package com.jy.lang;
 
 import com.jy.SyntaxException;
+import com.jy.parser.Context;
 import com.jy.util.StringUtils;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public interface Statement {
     Statement getParent();
 
     void setParent(Statement parent);
+
+    Context getContext();
+
+    void setContext(Context context);
 
     /**
      * Assert that the child nodes is legal
