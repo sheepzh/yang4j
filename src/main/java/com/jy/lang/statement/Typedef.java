@@ -9,6 +9,7 @@ import com.jy.lang.BaseAppendableStatement;
 public class Typedef extends BaseAppendableStatement {
     /**
      * Must not be null
+     * Perhaps, the type can't be a base built-in type, but must be traced back to a YANG built-in type
      */
     private Type type;
 
